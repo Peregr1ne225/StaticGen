@@ -39,3 +39,57 @@ def extract_markdown_links(text):
     matches = re.findall(pattern, text)
 
     return matches
+
+
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        extract_node = []
+        extract_images = extract_markdown_images(old_node.text)
+        text = old_node.text
+        for i in range(len(extract_images)):
+            text = text.split(f"![{extract_images[i][0]}]({extract_images[i][1]})", 1)
+            if text[0] != "":
+                extract_node.append(TextNode(text[0], TextType.TEXT))
+            extract_node.append(
+                TextNode(extract_images[i][0], TextType.IMAGE, extract_images[i][1])
+            )
+            text = text[1]
+        print(text)
+        if len(text) > 0 and text != " ":
+            extract_node.append(TextNode(text, TextType.TEXT))
+        new_nodes.extend(extract_node)
+    return new_nodes
+
+
+def split_nodes_link(old_nodes):
+    new_nodes = []
+    for old_node in old_nodes:
+        extract_node = []
+        extract_links = extract_markdown_links(old_node.text)
+        text = old_node.text
+        for i in range(len(extract_links)):
+            text = text.split(f"[{extract_links[i][0]}]({extract_links[i][1]})", 1)
+            if text[0] != " ":
+                extract_node.append(TextNode(text[0], TextType.TEXT))
+            extract_node.append(
+                TextNode(extract_links[i][0], TextType.LINK, extract_links[i][1])
+            )
+            text = text[1]
+        if len(text) > 0 and text != " ":
+            extract_node.append(TextNode(text, TextType.TEXT))
+        new_nodes.extend(extract_node)
+    return new_nodes
+
+
+if __name__ == "__main__":
+    print(
+        split_nodes_image(
+            [
+                TextNode(
+                    "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://example.com)",
+                    TextType.TEXT,
+                )
+            ]
+        )
+    )
