@@ -46,19 +46,22 @@ def split_nodes_image(old_nodes):
     for old_node in old_nodes:
         extract_node = []
         extract_images = extract_markdown_images(old_node.text)
+        if len(extract_images) == 0:
+            new_nodes.append(old_node)
+            continue
+
         text = old_node.text
-        for i in range(len(extract_images)):
-            text = text.split(f"![{extract_images[i][0]}]({extract_images[i][1]})", 1)
+        for link in extract_images:
+            text = text.split(f"[{link[0]}]({link[1]})", 1)
             if text[0] != "":
                 extract_node.append(TextNode(text[0], TextType.TEXT))
-            extract_node.append(
-                TextNode(extract_images[i][0], TextType.IMAGE, extract_images[i][1])
-            )
+            extract_node.append(TextNode(link[0], TextType.LINK, link[1]))
             text = text[1]
-        print(text)
-        if len(text) > 0 and text != " ":
+
+        if len(text) > 0 and text != "":
             extract_node.append(TextNode(text, TextType.TEXT))
         new_nodes.extend(extract_node)
+
     return new_nodes
 
 
@@ -67,18 +70,22 @@ def split_nodes_link(old_nodes):
     for old_node in old_nodes:
         extract_node = []
         extract_links = extract_markdown_links(old_node.text)
+        if len(extract_links) == 0:
+            new_nodes.append(old_node)
+            continue
+
         text = old_node.text
-        for i in range(len(extract_links)):
-            text = text.split(f"[{extract_links[i][0]}]({extract_links[i][1]})", 1)
-            if text[0] != " ":
+        for link in extract_links:
+            text = text.split(f"[{link[0]}]({link[1]})", 1)
+            if text[0] != "":
                 extract_node.append(TextNode(text[0], TextType.TEXT))
-            extract_node.append(
-                TextNode(extract_links[i][0], TextType.LINK, extract_links[i][1])
-            )
+            extract_node.append(TextNode(link[0], TextType.LINK, link[1]))
             text = text[1]
-        if len(text) > 0 and text != " ":
+
+        if len(text) > 0 and text != "":
             extract_node.append(TextNode(text, TextType.TEXT))
         new_nodes.extend(extract_node)
+
     return new_nodes
 
 
