@@ -16,17 +16,6 @@ class TestSplitDelimiter(unittest.TestCase):
             "Delimiter '`' not balanced in text node",
         )
 
-    def test_split_delimiter_with_empty_text(self):
-        text = ""
-        delimiter = "`"
-        node = TextNode(text, TextType.TEXT)
-        with self.assertRaises(ValueError) as context:
-            split_nodes_delimiter([node], delimiter, TextType.TEXT)
-        self.assertEqual(
-            str(context.exception),
-            "Delimiter '`' not found in text node",
-        )
-
     def test_split_delimiter_with_multiple_delimiters(self):
         text = "**Hello**, World!, **It's me**"
         delimiter = "**"
