@@ -96,11 +96,3 @@ def text_to_textnodes(text):
     node = split_nodes_image(node)
     node = split_nodes_link(node)
     return node
-
-
-if __name__ == "__main__":
-    print(
-        text_to_textnodes(
-            "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        )
-    )
